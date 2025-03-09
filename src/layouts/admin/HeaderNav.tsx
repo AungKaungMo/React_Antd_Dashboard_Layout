@@ -15,6 +15,7 @@ import {
   Flex,
   Layout,
   MenuProps,
+  message,
   Modal,
   Switch,
   Tooltip,
@@ -23,6 +24,7 @@ import { useState } from "react";
 import { useTheme } from "../../providers/ThemeProvider";
 import { Theme } from "../../types/theme";
 import { colors } from "../../constants/theme";
+import { useAuthStore } from "../../store/auth-store";
 
 const { Header } = Layout;
 
@@ -33,6 +35,7 @@ type PropsType = {
 
 const HeaderNav = ({ collapsed, setCollapsed }: PropsType) => {
   const { theme, setTheme, mode, setMode, currentTheme }  = useTheme()
+  const {user, logout} = useAuthStore()
   const items: MenuProps["items"] = [
     {
       key: "user-profile-link",
@@ -55,16 +58,13 @@ const HeaderNav = ({ collapsed, setCollapsed }: PropsType) => {
       label: "logout",
       icon: <LogoutOutlined />,
       danger: true,
-      // onClick: () => {
-      //   message.open({
-      //     type: 'loading',
-      //     content: 'signing you out',
-      //   });
-
-      //   setTimeout(() => {
-      //     navigate(PATH_LANDING.root);
-      //   }, 1000);
-      // },
+      onClick: () => {
+        logout()
+        message.open({
+          type: "success",
+          content: 'Log out',
+        });
+      },
     },
   ];
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -114,7 +114,7 @@ const HeaderNav = ({ collapsed, setCollapsed }: PropsType) => {
               size="large"
               gap={2}
             >
-              A
+              {user?.name[0] || 'A'}
             </Avatar>
           </Flex>
         </Dropdown>

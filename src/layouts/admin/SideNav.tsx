@@ -1,7 +1,7 @@
-import { FieldTimeOutlined, PieChartOutlined, ProjectOutlined, RollbackOutlined, UserAddOutlined } from "@ant-design/icons";
+import { PieChartOutlined, ProjectOutlined, RollbackOutlined, UserAddOutlined } from "@ant-design/icons";
 import { Layout, ConfigProvider, Menu, MenuProps, SiderProps } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, matchPath, useLocation } from "react-router-dom";
 import AndtLogo from '../../assets/images/antd_logo.png'
 import { ROUTES } from "../../constants/route";
 import { useTheme } from "../../providers/ThemeProvider";
@@ -25,86 +25,107 @@ const getItem = (
   } as MenuItem;
 };
 
-const items: MenuProps["items"] = [
-  getItem('Dashboard', 'dashboard_group', null, [], 'group'),
-  getItem(
-    <Link to={ROUTES.dashboard}>Dashboard</Link>,
-    'dashboard',
-    <PieChartOutlined />
-  ),
-  getItem(
-    <Link to={ROUTES.timeline}>Timeline</Link>,
-    'timeline',
-    <FieldTimeOutlined />
-  ),
-
-  getItem('Master Data', 'master_data', null, [], 'group'),
-  getItem(
-    <Link to={ROUTES.project}>Project</Link>,
-    'project',
-    <ProjectOutlined />
-  ),
-  getItem(
-    <Link to={ROUTES.phase}>Phase</Link>,
-    'phase',
-    <ProjectOutlined />
-  ),
-  getItem(
-    <Link to={ROUTES.department}>Department</Link>,
-    'department',
-    <ProjectOutlined />
-  ),
+// const items: MenuProps["items"] = [
   // getItem("User Management", "user_management", <UsergroupAddOutlined />, [
   //   getItem(<Link to={ROUTES.user}>User</Link>, "user", null),
   //   getItem(<Link to={ROUTES.role}>Role</Link>, "roles", null),
   //   getItem(<Link to={ROUTES.permission}>Permission</Link>, "permission", null),
   // ]),
-
-  getItem('User Management', 'user_management', null, [], 'group'),
-  getItem(
-    <Link to={ROUTES.user}>User</Link>,
-    'user',
-    <UserAddOutlined />
-  ),
-  getItem(
-    <Link to={ROUTES.role}>Role</Link>,
-    'role',
-    <RollbackOutlined />
-  ),
-  getItem(
-    <Link to={ROUTES.permission}>Permission</Link>,
-    'permission',
-    <ProjectOutlined />
-  ),
-];
+// ];
 // const rootSubmenuKeys = ["dashboards", "corporate", "user-profile"];
 
 const SideNav = ({collapsed, ...others} : SiderProps ) => {
   const nodeRef = useRef(null);
-  const [openKeys, setOpenKeys] = useState([""]);
+  // const [openKeys, setOpenKeys] = useState([""]);
   const [current, setCurrent] = useState("");
   const { pathname } = useLocation();
   const { currentTheme } = useTheme()
 
-  const filterItems = collapsed ? items.filter(item => item?.type !== 'group') : items;
+  const dynamicItems = () => {
+    const isProjectDashboard = matchPath("/project/:id", pathname) || pathname.includes('document');
+
+    if(isProjectDashboard) {
+      return [
+        getItem(
+          <Link to={ROUTES.project_detail}>Dashboard</Link>,
+          "project_detail",
+          <ProjectOutlined />
+        ),
+        getItem(
+          <Link to={ROUTES.document}>Document</Link>,
+          "document",
+          <ProjectOutlined />
+        ),
+      ]
+    }else {
+      return [
+        getItem('Dashboard', 'dashboard_group', null, [], 'group'),
+        getItem(
+          <Link to={ROUTES.dashboard}>Dashboard</Link>,
+          'dashboard',
+          <PieChartOutlined />
+        ),
+        getItem(
+          <Link to={ROUTES.project}>Project</Link>,
+          'project',
+          <ProjectOutlined />
+        ),
+        getItem('Master Data', 'master_data', null, [], 'group'),
+        // getItem(
+        //   <Link to={ROUTES.department}>Department</Link>,
+        //   'department',
+        //   <ProjectOutlined />
+        // ),
+        getItem(
+          <Link to={ROUTES.role}>Role</Link>,
+          'role',
+          <RollbackOutlined />
+        ),
+        getItem(
+          <Link to={ROUTES.permission}>Permission</Link>,
+          'permission',
+          <ProjectOutlined />
+        ),
+        getItem(
+          <Link to={ROUTES.user}>User</Link>,
+          'user',
+          <UserAddOutlined />
+        ),
+      ]
+    }
+  }
+
+  const filterItems = collapsed
+  ? dynamicItems().filter((item) => item?.type !== "group")
+  : dynamicItems();
   
   const onClick: MenuProps["onClick"] = (e) => {
     console.log("click ", e);
   };
 
-  const onOpenChange: MenuProps["onOpenChange"] = (keys) => {
-    const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
+  // const onOpenChange: MenuProps["onOpenChange"] = (keys) => {
+    // const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
     // if (latestOpenKey && rootSubmenuKeys.indexOf(latestOpenKey!) === -1) {
     //   setOpenKeys(keys);
     // } else {
-      setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
+      // setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
     // }
-  };
+  // };
+
+  /*** 
+    MAKING TO SHOW ACTIVE AND CURRENT ROUTE
+  ***/  
 
   useEffect(() => {
-    const paths = pathname.split('/');
-    setOpenKeys(paths);
-    setCurrent(paths[paths.length - 1]);
+    const paths = pathname.split('/')?.filter(p => p != '');
+    // setOpenKeys(paths);
+    // setCurrent(paths[paths.length - 1]);
+ 
+    if(paths && paths.length > 1) {
+      setCurrent(paths[0].concat("_detail"))
+    }else {
+      setCurrent(paths[paths.length - 1]);
+    }
   }, [pathname]);
 
   return (
@@ -137,8 +158,8 @@ const SideNav = ({collapsed, ...others} : SiderProps ) => {
           mode="inline"
           items={filterItems}
           onClick={onClick}
-          openKeys={openKeys}
-          onOpenChange={onOpenChange}
+          // openKeys={openKeys}
+          // onOpenChange={onOpenChange}
           selectedKeys={[current]}
           className="!border-none "
         />

@@ -3,31 +3,31 @@ const ROUTE_DASHBOARD = {
 };
 
 const ROUTE_USERS = {
-  user: "/user-managements/user",
-  user_new: "/user-managements/user/new",
-  user_edit: "/user-managements/user/edit/:id",
-  user_detail: "/user-managements/user/:id",
+  user: "/user",
+  user_new: "/user/new",
+  user_edit: "/user/edit/:id",
+  user_detail: "/user/:id",
 };
 
 const ROUTE_ROLES = {
-  role: "/role-managements/role",
-  role_new: "/role-managements/role/new",
-  role_edit: "/role-managements/role/edit/:id",
-  role_detail: "/role-managements/role/:id",
+  role: "/role",
+  role_new: "/role/new",
+  role_edit: "/role/edit/:id",
+  role_detail: "/role/:id",
 };
 
 const ROUTE_PERMISSIONS = {
-  permission: "/permission-managements/permission",
-  permission_new: "/permission-managements/permission/new",
-  permission_edit: "/permission-managements/permission/edit/:id",
-  permission_detail: "/permission-managements/permission/:id",
+  permission: "/permission",
+  permission_new: "/permission/new",
+  permission_edit: "/permission/edit/:id",
+  permission_detail: "/permission/:id",
 };
 
 const ROUTE_DEPARTMENTS = {
-  department: "/department-managements/department",
-  department_new: "/department-managements/department/new",
-  department_edit: "/department-managements/department/edit/:id",
-  department_detail: "/department-managements/department/:id",
+  department: "/department",
+  department_new: "/department/new",
+  department_edit: "/department/edit/:id",
+  department_detail: "/department/:id",
 };
 
 const ROUTE_PROJECTS = {
@@ -44,11 +44,11 @@ const ROUTE_PHASES = {
   phase_detail: "/phase/:id",
 };
 
-const ROUTE_TIMELINES = {
-  timeline: "/timeline",
-  timeline_new: "/timeline/new",
-  timeline_edit: "/timeline/edit/:id",
-  timeline_detail: "/timeline/:id",
+const ROUTE_DOCUMENTS = {
+  document: "/document",
+  document_new: "/document/new",
+  document_edit: "/document/edit/:id",
+  document_detail: "/document/:id",
 };
 
 const ROUTE_KNOWLEDGES = {
@@ -68,7 +68,7 @@ const ROUTE_KNOWLEDGE_CATEGORIES = {
 export const ROUTES = {
   default: "/",
   ...ROUTE_DASHBOARD,
-  ...ROUTE_TIMELINES,
+  ...ROUTE_DOCUMENTS,
   ...ROUTE_USERS,
   ...ROUTE_ROLES,
   ...ROUTE_PERMISSIONS,
